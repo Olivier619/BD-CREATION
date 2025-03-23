@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BD Creator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>BD Creator</h1>
+        
+        <!-- Contrôles de session -->
+        <div class="session-controls">
+            <div class="session-buttons">
+                <button id="save-session-btn" class="session-button">Sauvegarder la session</button>
+                <button id="new-session-btn" class="session-button">Nouvelle session</button>
+                <select id="load-session-select" class="session-select">
+                    <option value="">Charger une session...</option>
+                </select>
+            </div>
+            <div id="session-info" class="session-info">
+                Session actuelle: <span id="current-session-name">Nouvelle session</span>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <a href="index.html" class="button">Accueil</a>
+            <a href="scenario.html" class="button">Scénario</a>
+            <a href="storyboard.html" class="button">Storyboard</a>
+            <a href="prompts.html" class="button">Prompts</a>
+        </div>
+        
+        <h2>Créez votre BD du début à la fin</h2>
+        
+        <p>Bienvenue sur BD Creator, l'application qui vous permet de créer une bande dessinée complète en quelques étapes simples.</p>
+        
+        <ol class="steps">
+            <li>Entrez quelques mots ou phrases qui inspireront votre BD</li>
+            <li>Nous générerons un scénario complet pour une BD de 48 pages</li>
+            <li>Vous pourrez visualiser et approuver le storyboard pour chaque chapitre</li>
+            <li>Nous créerons des prompts optimisés pour Midjourney pour chaque case</li>
+        </ol>
+        
+        <div class="feature">
+            <h3>Entrez des mots-clés pour votre BD :</h3>
+            <input type="text" id="keywords" placeholder="Ex: aventure spatiale, robots, amitié">
+            <button id="generate-scenario-btn" class="button">Générer un scénario</button>
+        </div>
+        
+        <div class="feature">
+            <h3>Fonctionnalités</h3>
+            
+            <div class="feature">
+                <h4>Génération de scénarios</h4>
+                <p>Notre système analyse vos mots-clés et génère un scénario complet divisé en chapitres, avec une structure narrative cohérente.</p>
+            </div>
+            
+            <div class="feature">
+                <h4>Création de storyboards</h4>
+                <p>Pour chaque chapitre, nous créons un storyboard détaillé avec 3 à 7 cases par page, incluant des descriptions visuelles et des dialogues.</p>
+            </div>
+            
+            <div class="feature">
+                <h4>Prompts pour Midjourney</h4>
+                <p>Nous générons des prompts optimisés pour Midjourney pour chaque case, vous permettant de créer facilement les images de votre BD.</p>
+            </div>
+            
+            <div class="feature">
+                <h4>Sauvegarde de sessions</h4>
+                <p>Vous pouvez sauvegarder votre travail à tout moment et créer plusieurs projets de BD différents.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inclure les scripts -->
+    <script src="bd_creator_session_manager.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

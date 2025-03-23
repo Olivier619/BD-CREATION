@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storyboard - BD Creator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>BD Creator - Storyboard</h1>
+        
+        <!-- Contrôles de session -->
+        <div class="session-controls">
+            <div class="session-buttons">
+                <button id="save-session-btn" class="session-button">Sauvegarder la session</button>
+                <button id="new-session-btn" class="session-button">Nouvelle session</button>
+                <select id="load-session-select" class="session-select">
+                    <option value="">Charger une session...</option>
+                </select>
+            </div>
+            <div id="session-info" class="session-info">
+                Session actuelle: <span id="current-session-name">Nouvelle session</span>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <a href="index.html" class="button">Accueil</a>
+            <a href="scenario.html" class="button">Scénario</a>
+            <a href="storyboard.html" class="button active">Storyboard</a>
+            <a href="prompts.html" class="button">Prompts</a>
+        </div>
+        
+        <h2>Storyboard pour le chapitre : <span id="chapter-title"></span></h2>
+        <p>Voici le storyboard généré pour ce chapitre. Chaque page contient entre 3 et 7 cases avec des descriptions visuelles et des dialogues.</p>
+        
+        <div id="storyboard-container" class="storyboard-container">
+            <p>Chargement du storyboard...</p>
+        </div>
+        
+        <div class="navigation">
+            <p>
+                <a href="prompts.html" class="button" id="generate-prompts-link">Générer les prompts</a>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Inclure les scripts -->
+    <script src="bd_creator_session_manager.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
