@@ -12,38 +12,107 @@ async function generateScenario(keywords) {
         // Simulation d'une requête API
         console.log("Génération du scénario à partir de : " + keywords);
         
-        // Dans une version réelle, ceci serait un appel à une API
-        // Ici, nous simulons une réponse
+        // Ajouter un facteur d'aléatoire supplémentaire pour garantir l'unicité du scénario
+        // même avec les mêmes mots-clés
+        const randomSeed = Date.now() + Math.floor(Math.random() * 10000);
+        console.log("Seed aléatoire pour la génération du scénario : " + randomSeed);
+        
+        // Utiliser les mots-clés pour influencer le scénario
+        const keywordsList = keywords.split(/[ ,]+/).filter(k => k.length > 0);
+        
+        // Générer un titre aléatoire basé sur les mots-clés
+        const titlePrefixes = ["L'Aventure", "Le Mystère", "La Quête", "Le Voyage", "L'Odyssée", "Le Secret"];
+        const titleSuffixes = ["Mystérieuse", "Extraordinaire", "Fantastique", "Incroyable", "Légendaire", "Oubliée"];
+        
+        // Utiliser le seed aléatoire pour sélectionner les éléments du titre
+        const randomPrefix = titlePrefixes[Math.floor((randomSeed % 100) / 100 * titlePrefixes.length)];
+        const randomSuffix = titleSuffixes[Math.floor((randomSeed % 200) / 200 * titleSuffixes.length)];
+        
+        // Utiliser un mot-clé dans le titre si disponible
+        let title = `${randomPrefix} ${randomSuffix}`;
+        if (keywordsList.length > 0) {
+            const keywordForTitle = keywordsList[Math.floor((randomSeed % 300) / 300 * keywordsList.length)];
+            title = `${randomPrefix} ${keywordForTitle.charAt(0).toUpperCase() + keywordForTitle.slice(1)} ${randomSuffix}`;
+        }
+        
+        // Générer des chapitres aléatoires
+        const chapterTitles = [
+            "Le Début du Voyage", "Rencontres Inattendues", "L'Épreuve du Feu", 
+            "Révélations", "Le Dénouement", "La Découverte", "Le Conflit", 
+            "L'Alliance", "La Trahison", "La Confrontation", "La Transformation"
+        ];
+        
+        const chapterSummaries = [
+            "Notre héros découvre un mystérieux artefact qui va changer sa vie.",
+            "De nouveaux alliés et ennemis apparaissent sur le chemin.",
+            "Face à l'adversité, notre héros doit faire preuve de courage.",
+            "Des secrets longtemps cachés sont enfin révélés.",
+            "La confrontation finale et la résolution de l'aventure.",
+            "Une découverte inattendue bouleverse tous les plans.",
+            "Un conflit éclate entre les différents protagonistes.",
+            "Une alliance stratégique se forme pour affronter un danger commun.",
+            "Une trahison inattendue met en péril toute la mission.",
+            "Le moment de vérité arrive avec une confrontation inévitable.",
+            "Une transformation profonde s'opère chez le personnage principal."
+        ];
+        
+        // Déterminer le nombre de chapitres (entre 4 et 6)
+        const numChapters = Math.floor((randomSeed % 400) / 400 * 3) + 4;
+        
+        // Créer des chapitres uniques
+        const usedIndices = new Set();
+        const chapters = [];
+        
+        for (let i = 0; i < numChapters; i++) {
+            let index;
+            do {
+                index = Math.floor((randomSeed % (500 + i * 100)) / (500 + i * 100) * chapterTitles.length);
+            } while (usedIndices.has(index));
+            
+            usedIndices.add(index);
+            
+            // Générer un nombre de pages aléatoire entre 6 et 12
+            const pages = Math.floor((randomSeed % (600 + i * 100)) / (600 + i * 100) * 7) + 6;
+            
+            // Créer des descriptions détaillées en incorporant les mots-clés
+            let summary = chapterSummaries[index];
+            
+            // Ajouter des détails sur les intervenants et les lieux
+            const characters = ["un héros courageux", "une héroïne mystérieuse", "un sage mentor", "un antagoniste menaçant", "un allié inattendu"];
+            const locations = ["dans une forêt dense", "au cœur d'une ville animée", "dans un château abandonné", "sur une île lointaine", "dans un temple ancien"];
+            const expressions = ["avec détermination", "montrant de la peur", "souriant avec confiance", "regardant avec méfiance", "observant attentivement"];
+            
+            const randomCharacter = characters[Math.floor((randomSeed % (700 + i * 100)) / (700 + i * 100) * characters.length)];
+            const randomLocation = locations[Math.floor((randomSeed % (800 + i * 100)) / (800 + i * 100) * locations.length)];
+            const randomExpression = expressions[Math.floor((randomSeed % (900 + i * 100)) / (900 + i * 100) * expressions.length)];
+            
+            // Incorporer un mot-clé si disponible
+            if (keywordsList.length > 0) {
+                const keywordForSummary = keywordsList[Math.floor((randomSeed % (1000 + i * 100)) / (1000 + i * 100) * keywordsList.length)];
+                summary += ` ${randomCharacter} se trouve ${randomLocation} et fait face à un défi lié à ${keywordForSummary}, ${randomExpression}.`;
+            } else {
+                summary += ` ${randomCharacter} se trouve ${randomLocation}, ${randomExpression}.`;
+            }
+            
+            chapters.push({
+                title: chapterTitles[index],
+                summary: summary,
+                pages: pages
+            });
+        }
+        
+        // Trier les chapitres pour avoir une progression logique
+        chapters.sort((a, b) => {
+            const aIndex = chapterTitles.indexOf(a.title);
+            const bIndex = chapterTitles.indexOf(b.title);
+            return aIndex - bIndex;
+        });
+        
         const scenario = {
-            title: "L'Aventure Mystérieuse",
+            title: title,
             theme: keywords,
-            chapters: [
-                {
-                    title: "Le Début du Voyage",
-                    summary: "Notre héros découvre un mystérieux artefact qui va changer sa vie.",
-                    pages: 10
-                },
-                {
-                    title: "Rencontres Inattendues",
-                    summary: "De nouveaux alliés et ennemis apparaissent sur le chemin.",
-                    pages: 12
-                },
-                {
-                    title: "L'Épreuve du Feu",
-                    summary: "Face à l'adversité, notre héros doit faire preuve de courage.",
-                    pages: 8
-                },
-                {
-                    title: "Révélations",
-                    summary: "Des secrets longtemps cachés sont enfin révélés.",
-                    pages: 10
-                },
-                {
-                    title: "Le Dénouement",
-                    summary: "La confrontation finale et la résolution de l'aventure.",
-                    pages: 8
-                }
-            ]
+            chapters: chapters,
+            generatedAt: Date.now() // Ajouter un horodatage pour garantir l'unicité
         };
         
         return scenario;
@@ -58,18 +127,87 @@ async function createStoryboard(scenario, chapterIndex) {
     try {
         console.log("Création du storyboard pour le chapitre: " + scenario.chapters[chapterIndex].title);
         
+        // Extraire des éléments du thème pour les utiliser dans les descriptions
+        const themeElements = scenario.theme.split(/[ ,]+/).filter(k => k.length > 0);
+        
         // Simulation de création de storyboard
         const pages = [];
         const pagesCount = scenario.chapters[chapterIndex].pages;
+        
+        // Descriptions possibles pour les cases
+        const visualDescriptions = [
+            "Un personnage principal se tient debout, regardant au loin avec détermination",
+            "Une vue panoramique d'un paysage impressionnant avec des personnages au premier plan",
+            "Un gros plan sur le visage d'un personnage montrant une émotion intense",
+            "Une scène d'action dynamique avec plusieurs personnages en mouvement",
+            "Un moment de calme et de réflexion dans un cadre paisible",
+            "Une rencontre tendue entre protagoniste et antagoniste",
+            "Une découverte surprenante révélée dans un environnement mystérieux",
+            "Un flashback montrant des événements passés importants",
+            "Une scène de dialogue entre personnages principaux",
+            "Un moment dramatique avec une révélation choquante"
+        ];
+        
+        const dialogueTemplates = [
+            "Je ne m'attendais pas à trouver cela ici !",
+            "Nous devons agir rapidement avant qu'il ne soit trop tard.",
+            "Je ne te fais pas confiance, mais nous n'avons pas le choix.",
+            "Ce n'est que le début de notre aventure.",
+            "Tout ce que nous connaissions était un mensonge.",
+            "Cette découverte change absolument tout.",
+            "Jamais je n'aurais imaginé en arriver là.",
+            "Ensemble, nous pouvons surmonter cet obstacle.",
+            "Il y a une explication logique à tout cela.",
+            "Le moment est venu de révéler la vérité."
+        ];
         
         for (let i = 0; i < pagesCount; i++) {
             const casesCount = Math.floor(Math.random() * 5) + 3; // Entre 3 et 7 cases
             const cases = [];
             
+            // Assurer que les cases d'une page racontent une mini-histoire cohérente
+            const pageStoryType = Math.floor(Math.random() * 3); // 0: découverte, 1: confrontation, 2: révélation
+            
             for (let j = 0; j < casesCount; j++) {
+                // Sélectionner une description de base
+                let baseDesc = visualDescriptions[Math.floor(Math.random() * visualDescriptions.length)];
+                let baseDialogue = dialogueTemplates[Math.floor(Math.random() * dialogueTemplates.length)];
+                
+                // Ajouter des éléments du thème si disponibles
+                if (themeElements.length > 0) {
+                    const element = themeElements[Math.floor(Math.random() * themeElements.length)];
+                    
+                    // Adapter la description selon le type d'histoire de la page
+                    if (pageStoryType === 0) { // découverte
+                        baseDesc = `${baseDesc} en découvrant un élément lié à ${element}`;
+                    } else if (pageStoryType === 1) { // confrontation
+                        baseDesc = `${baseDesc} face à un défi concernant ${element}`;
+                    } else { // révélation
+                        baseDesc = `${baseDesc} suite à une révélation à propos de ${element}`;
+                    }
+                    
+                    // Adapter le dialogue
+                    if (j === 0) {
+                        baseDialogue = `Regardez ! C'est incroyable ce que nous avons trouvé à propos de ${element} !`;
+                    } else if (j === casesCount - 1) {
+                        baseDialogue = `Maintenant nous savons ce que nous devons faire avec ${element}.`;
+                    }
+                }
+                
+                // Progression de l'histoire dans la page
+                const progress = j / (casesCount - 1); // 0 au début, 1 à la fin
+                
+                if (progress < 0.3) {
+                    baseDesc = `Introduction: ${baseDesc}`;
+                } else if (progress < 0.7) {
+                    baseDesc = `Développement: ${baseDesc}`;
+                } else {
+                    baseDesc = `Conclusion: ${baseDesc}`;
+                }
+                
                 cases.push({
-                    description: `Description visuelle de la case ${j+1} de la page ${i+1}`,
-                    dialogue: `Dialogue pour la case ${j+1}`
+                    description: baseDesc,
+                    dialogue: baseDialogue
                 });
             }
             
@@ -96,13 +234,57 @@ async function generatePrompts(storyboard) {
         
         const prompts = [];
         
+        // Styles artistiques variés pour les prompts
+        const artStyles = [
+            "comic book style", 
+            "manga style", 
+            "watercolor illustration", 
+            "digital art", 
+            "realistic comic art",
+            "cel shaded animation style",
+            "graphic novel art",
+            "cartoon style",
+            "noir comic style",
+            "vibrant comic art"
+        ];
+        
+        // Éléments visuels pour enrichir les prompts
+        const visualElements = [
+            "detailed", 
+            "professional lighting", 
+            "dynamic composition",
+            "dramatic perspective",
+            "expressive characters",
+            "rich background details",
+            "cinematic framing",
+            "strong contrast",
+            "emotional impact",
+            "vivid colors"
+        ];
+        
         storyboard.pages.forEach(page => {
             page.cases.forEach((caseItem, index) => {
+                // Sélectionner aléatoirement un style artistique et des éléments visuels
+                const style = artStyles[Math.floor(Math.random() * artStyles.length)];
+                
+                // Sélectionner 2-3 éléments visuels aléatoires
+                const elements = [];
+                const numElements = Math.floor(Math.random() * 2) + 2; // 2-3 éléments
+                
+                for (let i = 0; i < numElements; i++) {
+                    let element;
+                    do {
+                        element = visualElements[Math.floor(Math.random() * visualElements.length)];
+                    } while (elements.includes(element));
+                    
+                    elements.push(element);
+                }
+                
                 // Création d'un prompt Midjourney structuré sans la commande /imagine ni le paramètre --v 5.2
                 const prompt = {
                     case: `Page ${page.pageNumber}, Case ${index + 1}`,
                     description: caseItem.description,
-                    prompt: `comic book style, detailed, professional lighting ${caseItem.description}`
+                    prompt: `${style}, ${elements.join(", ")}, ${caseItem.description}`
                 };
                 
                 prompts.push(prompt);
@@ -149,14 +331,34 @@ document.addEventListener('DOMContentLoaded', function() {
             keywordsDisplay.textContent = keywords;
         }
         
-        // Générer et afficher le scénario
-        generateScenario(keywords).then(scenario => {
+        // Vérifier si nous venons d'une nouvelle session ou d'un rechargement normal
+        const urlParams = new URLSearchParams(window.location.search);
+        const isNewSession = urlParams.has('new');
+        
+        // Vérifier si un scénario existe déjà dans le localStorage
+        const existingScenario = localStorage.getItem('bdScenario');
+        
+        // Forcer la régénération du scénario si c'est une nouvelle session ou si aucun scénario n'existe
+        if (isNewSession || !existingScenario) {
+            console.log("Génération d'un nouveau scénario (nouvelle session ou premier chargement)");
+            
+            // Générer et afficher le scénario
+            generateScenario(keywords).then(scenario => {
+                projectData.scenario = scenario;
+                localStorage.setItem('bdScenario', JSON.stringify(scenario));
+                
+                // Afficher le scénario
+                displayScenario(scenario);
+            });
+        } else {
+            // Utiliser le scénario existant
+            console.log("Utilisation du scénario existant");
+            const scenario = JSON.parse(existingScenario);
             projectData.scenario = scenario;
-            localStorage.setItem('bdScenario', JSON.stringify(scenario));
             
             // Afficher le scénario
             displayScenario(scenario);
-        });
+        }
     }
     
     // Vérifier si nous sommes sur la page de storyboard
