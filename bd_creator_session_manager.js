@@ -169,41 +169,24 @@ class SessionManager {updateCurrentSession(data) {
         
         const session = this.sessions[sessionId];
         
-        if (confirm(`Voulez-vous charger la session "${session.name}" ? Les modifications non sauvegardées seront perdues.`)) {
-            // Définir la session actuelle
-            this.currentSessionId = sessionId;
-            localStorage.setItem('currentSessionId', sessionId);
-            
-            // Restaurer les données de la session
-            if (session.keywords) localStorage.setItem('bdKeywords', session.keywords);
-            if (session.scenario) localStorage.setItem('bdScenario', session.scenario);
-            if (session.chapter) localStorage.setItem('bdChapter', session.chapter);
-            if (session.storyboard) localStorage.setItem('bdStoryboard', session.storyboard);
-            
-            // Mettre à jour l'interface
-            this.updateCurrentSessionInfo(session.name);
-            
-            // Rediriger vers la page appropriée
-            let targetPage = 'index.html';
-            if (session.currentPage) {
-                targetPage = session.currentPage;
-                if (session.urlParams) {
-                    targetPage += session.urlParams;
-                }
+       if (confirm('Voulez-vous vraiment commencer une nouvelle session ? Les modifications non sauvegardées seront perdues.')) {
+    console.log("Confirmation reçue pour nouvelle session");
+    try {
+        for (let key in localStorage) {
+            if (key.startsWith('bd') || key === 'currentSessionId') {
+                localStorage.removeItem(key);
             }
-            
-            window.location.href = targetPage;
         }
+        console.log("Données de session effacées du localStorage");
+        const timestamp = new Date().getTime();
+        window.location.href = 'index.html?new=' + timestamp;
+    } catch (error) {
+        console.error('Erreur lors de la création d\'une nouvelle session:', error);
+        alert('Une erreur est survenue lors de la création d\'une nouvelle session. Veuillez réessayer.');
     }
-    
-    // Mettre à jour l'information sur la session actuelle
-    updateCurrentSessionInfo(sessionName) {
-        const sessionNameElement = document.getElementById('current-session-name');
-        if (sessionNameElement) {
-            sessionNameElement.textContent = sessionName;
-        } else {
-            console.error("Élément 'current-session-name' non trouvé");
-        }
+} else {
+    console.log("Création de nouvelle session annulée par l'utilisateur");
+}
     }
     
     // Charger toutes les sessions depuis le localStorage
