@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BD Creator</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Styles supplémentaires pour le textarea */
+        .text-input-area {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -43,8 +57,8 @@
         </ol>
         
         <div class="feature">
-            <h3>Entrez des mots-clés pour votre BD :</h3>
-            <input type="text" id="keywords" placeholder="Ex: aventure spatiale, robots, amitié">
+            <h3>Entrez du texte pour inspirer votre BD :</h3>
+            <textarea id="keywords" class="text-input-area" placeholder="Entrez un texte de plusieurs lignes ou paragraphes qui servira d'inspiration pour votre BD. Vous pouvez décrire un univers, des personnages, une situation ou une histoire complète. Notre IA analysera l'ensemble de votre texte pour créer un scénario détaillé."></textarea>
             <button id="generate-scenario-btn" class="button">Générer un scénario</button>
         </div>
         
@@ -53,7 +67,7 @@
             
             <div class="feature">
                 <h4>Génération de scénarios</h4>
-                <p>Notre système analyse vos mots-clés et génère un scénario complet divisé en chapitres, avec une structure narrative cohérente, des personnages détaillés et un univers riche.</p>
+                <p>Notre système analyse en profondeur votre texte d'entrée et génère un scénario complet divisé en chapitres, avec une structure narrative cohérente, des personnages détaillés et un univers riche qui reflète fidèlement les éléments de votre texte.</p>
             </div>
             
             <div class="feature">
@@ -63,7 +77,7 @@
             
             <div class="feature">
                 <h4>Prompts pour Midjourney</h4>
-                <p>Nous générons des prompts optimisés pour Midjourney pour chaque case, parfaitement adaptés au contenu du storyboard, vous permettant de créer facilement les images de votre BD.</p>
+                <p>Nous générons des prompts extrêmement détaillés pour Midjourney pour chaque case, avec des descriptions riches des personnages, décors, ambiances et perspectives, parfaitement adaptés au contenu du storyboard.</p>
             </div>
             
             <div class="feature">
@@ -78,3 +92,4 @@
     <script src="main.js"></script>
 </body>
 </html>
+
