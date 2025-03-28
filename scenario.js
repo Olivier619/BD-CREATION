@@ -4,39 +4,18 @@
  */
 async function generateScenarioDetaille(keywords) {
     try {
-        console.log("Génération du scénario détaillé à partir de : " + keywords);
+        console.log(`Génération du scénario détaillé à partir de : ${keywords}`);
         
-        // Ajouter un facteur d'aléatoire pour garantir l'unicité du scénario
-        const randomSeed = Date.now() + Math.floor(Math.random() * 10000);
+        const randomSeed = generateRandomSeed();
+        const keywordsList = processKeywords(keywords);
         
-        // Traitement des mots-clés
-        const keywordsList = keywords.split(/[ ,]+/).filter(k => k.length > 0);
-        
-        // Génération d'un titre créatif basé sur les mots-clés
-        let title = genererTitreCreatif(keywordsList, randomSeed);
-        
-        // Création d'un univers cohérent basé sur les mots-clés
+        const title = genererTitreCreatif(keywordsList, randomSeed);
         const univers = creerUnivers(keywordsList, randomSeed);
-        
-        // Création des personnages principaux avec des caractéristiques détaillées
         const personnages = creerPersonnages(keywordsList, univers, randomSeed);
-        
-        // Création d'une structure narrative complète
         const structureNarrative = creerStructureNarrative(keywordsList, univers, personnages, randomSeed);
-        
-        // Génération des chapitres détaillés
         const chapitres = genererChapitresDetailles(structureNarrative, univers, personnages, randomSeed);
         
-        // Construction de l'objet scénario complet
-        const scenario = {
-            title: title,
-            theme: keywords,
-            univers: univers,
-            personnages: personnages,
-            structureNarrative: structureNarrative,
-            chapters: chapitres,
-            generatedAt: Date.now()
-        };
+        const scenario = buildScenario(title, keywords, univers, personnages, structureNarrative, chapitres);
         
         return scenario;
     } catch (error) {
@@ -48,7 +27,7 @@ async function generateScenarioDetaille(keywords) {
 /**
  * Génère un titre créatif basé sur les mots-clés
  */
-function genererTitreCreatif(keywordsList, randomSeed) {
+const genererTitreCreatif = (keywordsList, randomSeed) => {
     const titresCreatifs = [
         "Les Chroniques de [Mot-clé]",
         "L'Odyssée [Mot-clé]",
@@ -62,15 +41,13 @@ function genererTitreCreatif(keywordsList, randomSeed) {
         "L'Écho des [Mot-clé]"
     ];
     
-    // Sélection d'un modèle de titre
     const modeleIndex = Math.floor((randomSeed % 100) / 100 * titresCreatifs.length);
     let modele = titresCreatifs[modeleIndex];
     
-    // Remplacement du placeholder par un mot-clé
     if (keywordsList.length > 0) {
         const keywordIndex = Math.floor((randomSeed % 200) / 200 * keywordsList.length);
         const keyword = keywordsList[keywordIndex];
-        const keywordCapitalized = keyword.charAt(0).toUpperCase() + keyword.slice(1);
+        const keywordCapitalized = capitalizeFirstLetter(keyword);
         modele = modele.replace("[Mot-clé]", keywordCapitalized);
     } else {
         modele = modele.replace("[Mot-clé]", "Mondes");
@@ -82,18 +59,15 @@ function genererTitreCreatif(keywordsList, randomSeed) {
 /**
  * Crée un univers cohérent basé sur les mots-clés
  */
-function creerUnivers(keywordsList, randomSeed) {
-    // Types d'univers possibles
+const creerUnivers = (keywordsList, randomSeed) => {
     const typesUnivers = [
         "médiéval-fantastique", "science-fiction", "post-apocalyptique", 
         "contemporain", "steampunk", "cyberpunk", "mythologique",
         "historique", "dystopique", "utopique"
     ];
     
-    // Sélection d'un type d'univers influencé par les mots-clés
     let typeUnivers = typesUnivers[Math.floor((randomSeed % 300) / 300 * typesUnivers.length)];
     
-    // Adaptation du type d'univers en fonction des mots-clés
     if (keywordsList.length > 0) {
         for (const keyword of keywordsList) {
             if (keyword.includes("futur") || keyword.includes("robot") || keyword.includes("espace")) {
@@ -109,7 +83,6 @@ function creerUnivers(keywordsList, randomSeed) {
         }
     }
     
-    // Caractéristiques de l'univers
     const caracteristiques = {
         "médiéval-fantastique": {
             epoque: "Âge des légendes",
@@ -173,7 +146,6 @@ function creerUnivers(keywordsList, randomSeed) {
         }
     };
     
-    // Création de l'univers détaillé
     const univers = {
         type: typeUnivers,
         ...caracteristiques[typeUnivers],
@@ -186,13 +158,11 @@ function creerUnivers(keywordsList, randomSeed) {
 /**
  * Crée des personnages principaux avec des caractéristiques détaillées
  */
-function creerPersonnages(keywordsList, univers, randomSeed) {
-    // Archétypes de personnages
+const creerPersonnages = (keywordsList, univers, randomSeed) => {
     const archetypes = [
         "héros", "mentor", "allié", "antagoniste", "gardien", "messager", "ombre"
     ];
     
-    // Traits de personnalité
     const traits = {
         "héros": ["courageux", "déterminé", "idéaliste", "loyal", "impulsif"],
         "mentor": ["sage", "patient", "mystérieux", "exigeant", "protecteur"],
@@ -203,7 +173,6 @@ function creerPersonnages(keywordsList, univers, randomSeed) {
         "ombre": ["tourmenté", "complexe", "imprévisible", "dangereux", "séduisant"]
     };
     
-    // Motivations possibles
     const motivations = {
         "héros": ["protéger les innocents", "venger un proche", "prouver sa valeur", "découvrir la vérité", "accomplir une prophétie"],
         "mentor": ["transmettre un savoir", "réparer une erreur passée", "préparer la nouvelle génération", "maintenir l'équilibre", "expier une faute"],
@@ -214,28 +183,21 @@ function creerPersonnages(keywordsList, univers, randomSeed) {
         "ombre": ["racheter son âme", "défier son destin", "semer le chaos", "tester ses limites", "survivre à tout prix"]
     };
     
-    // Nombre de personnages principaux (3-5)
     const nombrePersonnages = Math.floor((randomSeed % 400) / 400 * 3) + 3;
     
-    // Création des personnages
     const personnages = [];
     const archetypesUtilises = new Set();
     
-    // Toujours inclure un héros et un antagoniste
     archetypesUtilises.add("héros");
     archetypesUtilises.add("antagoniste");
     
-    // Créer le héros
     const hero = creerPersonnage("héros", univers, keywordsList, randomSeed + 1);
     personnages.push(hero);
     
-    // Créer l'antagoniste
     const antagoniste = creerPersonnage("antagoniste", univers, keywordsList, randomSeed + 2);
     personnages.push(antagoniste);
     
-    // Créer les autres personnages
     for (let i = 2; i < nombrePersonnages; i++) {
-        // Sélectionner un archétype non utilisé
         let archetype;
         do {
             archetype = archetypes[Math.floor((randomSeed % (500 + i * 100)) / (500 + i * 100) * archetypes.length)];
@@ -243,76 +205,118 @@ function creerPersonnages(keywordsList, univers, randomSeed) {
         
         archetypesUtilises.add(archetype);
         
-        // Créer le personnage
         const personnage = creerPersonnage(archetype, univers, keywordsList, randomSeed + i + 1);
         personnages.push(personnage);
     }
     
     return personnages;
+}
+
+/**
+ * Crée un personnage avec des caractéristiques détaillées
+ */
+const creerPersonnage = (archetype, univers, keywordsList, seed) => {
+    const prenoms = {
+        "médiéval-fantastique": ["Elric", "Galadriel", "Thorin", "Lyra", "Aragorn", "Morgana", "Thalia", "Gareth"],
+        "science-fiction": ["Nova", "Orion", "Zephyr", "Andromeda", "Cygnus", "Vega", "Altair", "Lyra"],
+        "post-apocalyptique": ["Ash", "Rust", "Ember", "Flint", "Raven", "Storm", "Dust", "Echo"],
+        "contemporain": ["Alex", "Morgan", "Jordan", "Casey", "Taylor", "Riley", "Quinn", "Jamie"],
+        "steampunk": ["Augustus", "Victoria", "Edison", "Phileas", "Amelia", "Cornelius", "Eliza", "Bartholomew"],
+        "cyberpunk": ["Neon", "Zero", "Glitch", "Pixel", "Cipher", "Hack", "Chrome", "Bit"],
+        "mythologique": ["Perseus", "Athena", "Orion", "Cassandra", "Theseus", "Persephone", "Hermes", "Artemis"],
+        "historique": ["William", "Eleanor", "Henry", "Catherine", "Richard", "Elizabeth", "Thomas", "Anne"],
+        "dystopique": ["Cipher", "Unity", "Proctor", "Harmony", "Vector", "Proxy", "Index", "Metric"],
+        "utopique": ["Aether", "Serenity", "Harmony", "Zenith", "Lumina", "Pax", "Nova", "Celestia"]
+    };
     
-    // Fonction interne pour créer un personnage
-    function creerPersonnage(archetype, univers, keywordsList, seed) {
-        // Noms selon le type d'univers
-        const prenoms = {
-            "médiéval-fantastique": ["Elric", "Galadriel", "Thorin", "Lyra", "Aragorn", "Morgana", "Thalia", "Gareth"],
-            "science-fiction": ["Nova", "Orion", "Zephyr", "Andromeda", "Cygnus", "Vega", "Altair", "Lyra"],
-            "post-apocalyptique": ["Ash", "Rust", "Ember", "Flint", "Raven", "Storm", "Dust", "Echo"],
-            "contemporain": ["Alex", "Morgan", "Jordan", "Casey", "Taylor", "Riley", "Quinn", "Jamie"],
-            "steampunk": ["Augustus", "Victoria", "Edison", "Phileas", "Amelia", "Cornelius", "Eliza", "Bartholomew"],
-            "cyberpunk": ["Neon", "Zero", "Glitch", "Pixel", "Cipher", "Hack", "Chrome", "Bit"],
-            "mythologique": ["Perseus", "Athena", "Orion", "Cassandra", "Theseus", "Persephone", "Hermes", "Artemis"],
-            "historique": ["William", "Eleanor", "Henry", "Catherine", "Richard", "Elizabeth", "Thomas", "Anne"],
-            "dystopique": ["Cipher", "Unity", "Proctor", "Harmony", "Vector", "Proxy", "Index", "Metric"],
-            "utopique": ["Aether", "Serenity", "Harmony", "Zenith", "Lumina", "Pax", "Nova", "Celestia"]
-        };
-        
-        const noms = {
-            "médiéval-fantastique": ["Lumebois", "Acierétoile", "Corbefeu", "Ventdargent", "Pierrelune", "Ombreronce"],
-            "science-fiction": ["Stellaris", "Quantos", "Nebulon", "Voidwalker", "Lightspeed", "Cosmotron"],
-            "post-apocalyptique": ["Survivant", "Wasteland", "Scavenger", "Deadzone", "Rustwalker", "Ashborne"],
-            "contemporain": ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Garcia"],
-            "steampunk": ["Cogsworth", "Brassington", "Steamwright", "Gearhart", "Copperfield", "Ironside"],
-            "cyberpunk": ["Wirehead", "Netrunner", "Datasmith", "Gridlock", "Bitstream", "Neuromancer"],
-            "mythologique": ["d'Olympe", "de Troie", "d'Atlantis", "des Hespérides", "du Styx", "de Delphes"],
-            "historique": ["de Montfort", "Plantagenet", "Borgia", "Medici", "Tudor", "Bourbon", "Habsburg"],
-            "dystopique": ["Alpha", "Prime", "Omega", "Control", "Order", "Compliance", "Protocol"],
-            "utopique": ["Harmony", "Tranquil", "Serene", "Enlightened", "Ascendant", "Transcendent"]
-        };
-        
-        // Sélection d'un prénom et d'un nom
-        const prenomIndex = Math.floor((seed % 600) / 600 * prenoms[univers.type].length);
-        const nomIndex = Math.floor((seed % 700) / 700 * noms[univers.type].length);
-        
-        const prenom = prenoms[univers.type][prenomIndex];
-        const nom = noms[univers.type][nomIndex];
-        
-        // Sélection d'un trait de personnalité
-        const traitIndex = Math.floor((seed % 800) / 800 * traits[archetype].length);
-        const trait = traits[archetype][traitIndex];
-        
-        // Sélection d'une motivation
-        const motivationIndex = Math.floor((seed % 900) / 900 * motivations[archetype].length);
-        const motivation = motivations[archetype][motivationIndex];
-        
-        // Création d'une apparence physique
-        const apparences = [
-            "grand et élancé", "petit mais robuste", "d'allure athlétique", "à la silhouette imposante",
-            "mince et agile", "de stature moyenne mais charismatique", "à l'apparence fragile mais déterminée"
-        ];
-        
-        const apparenceIndex = Math.floor((seed % 1000) / 1000 * apparences.length);
-        const apparence = apparences[apparenceIndex];
-        
-        // Création d'un trait distinctif
-        const traitsDistinctifs = [
-            "une cicatrice sur le visage", "des yeux d'une couleur inhabituelle", "un tatouage symbolique",
-            "une mèche de cheveux colorée", "un accessoire unique toujours porté", "une démarche particulière",
-            "une voix remarquable", "une marque de naissance mystérieuse"
-        ];
-        
-        const traitDistinctifIndex = Math.floor((seed % 1100) / 1100 * traitsDistinctifs.length);
-        const traitDistinctif = traitsDistinctifs[traitDistinctifIndex];
-        
-        // Intégration d'un mot-clé si disponible
-        let competenceSpeciale = "";
-        if (keywordsList.length <response clipped><NOTE>To save on context only part of this file has been shown to you. You should retry this tool after you have searched inside the file with `grep -n` in order to find the line numbers of what you are looking for.</NOTE>
+    const noms = {
+        "médiéval-fantastique": ["Lumebois", "Acierétoile", "Corbefeu", "Ventdargent", "Pierrelune", "Ombreronce"],
+        "science-fiction": ["Stellaris", "Quantos", "Nebulon", "Voidwalker", "Lightspeed", "Cosmotron"],
+        "post-apocalyptique": ["Survivant", "Wasteland", "Scavenger", "Deadzone", "Rustwalker", "Ashborne"],
+        "contemporain": ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Garcia"],
+        "steampunk": ["Cogsworth", "Brassington", "Steamwright", "Gearhart", "Copperfield", "Ironside"],
+        "cyberpunk": ["Wirehead", "Netrunner", "Datasmith", "Gridlock", "Bitstream", "Neuromancer"],
+        "mythologique": ["d'Olympe", "de Troie", "d'Atlantis", "des Hespérides", "du Styx", "de Delphes"],
+        "historique": ["de Montfort", "Plantagenet", "Borgia", "Medici", "Tudor", "Bourbon", "Habsburg"],
+        "dystopique": ["Alpha", "Prime", "Omega", "Control", "Order", "Compliance", "Protocol"],
+        "utopique": ["Harmony", "Tranquil", "Serene", "Enlightened", "Ascendant", "Transcendent"]
+    };
+    
+    const prenomIndex = Math.floor((seed % 600) / 600 * prenoms[univers.type].length);
+    const nomIndex = Math.floor((seed % 700) / 700 * noms[univers.type].length);
+    
+    const prenom = prenoms[univers.type][prenomIndex];
+    const nom = noms[univers.type][nomIndex];
+    
+    const traitIndex = Math.floor((seed % 800) / 800 * traits[archetype].length);
+    const trait = traits[archetype][traitIndex];
+    
+    const motivationIndex = Math.floor((seed % 900) / 900 * motivations[archetype].length);
+    const motivation = motivations[archetype][motivationIndex];
+    
+    const apparences = [
+        "grand et élancé", "petit mais robuste", "d'allure athlétique", "à la silhouette imposante",
+        "mince et agile", "de stature moyenne mais charismatique", "à l'apparence fragile mais déterminée"
+    ];
+    
+    const apparenceIndex = Math.floor((seed % 1000) / 1000 * apparences.length);
+    const apparence = apparences[apparenceIndex];
+    
+    const traitsDistinctifs = [
+        "une cicatrice sur le visage", "des yeux d'une couleur inhabituelle", "un tatouage symbolique",
+        "une mèche de cheveux colorée", "un accessoire unique toujours porté", "une démarche particulière",
+        "une voix remarquable", "une marque de naissance mystérieuse"
+    ];
+    
+    const traitDistinctifIndex = Math.floor((seed % 1100) / 1100 * traitsDistinctifs.length);
+    const traitDistinctif = traitsDistinctifs[traitDistinctifIndex];
+    
+    let competenceSpeciale = "";
+    if (keywordsList.length > 0) {
+        const keywordIndex = Math.floor((seed % 1200) / 1200 * keywordsList.length);
+        competenceSpeciale = `Compétence spéciale: ${keywordsList[keywordIndex]}`;
+    }
+    
+    return {
+        prenom,
+        nom,
+        archetype,
+        trait,
+        motivation,
+        apparence,
+        traitDistinctif,
+        competenceSpeciale
+    };
+}
+
+/**
+ * Génère un seed aléatoire pour garantir l'unicité du scénario
+ */
+const generateRandomSeed = () => Date.now() + Math.floor(Math.random() * 10000);
+
+/**
+ * Traite les mots-clés pour les convertir en liste
+ */
+const processKeywords = keywords => keywords.split(/[ ,]+/).filter(k => k.length > 0);
+
+/**
+ * Construit l'objet scénario complet
+ */
+const buildScenario = (title, keywords, univers, personnages, structureNarrative, chapitres) => ({
+    title,
+    theme: keywords,
+    univers,
+    personnages,
+    structureNarrative,
+    chapters: chapitres,
+    generatedAt: Date.now()
+});
+
+// Placeholder functions for creerStructureNarrative and genererChapitresDetailles
+const creerStructureNarrative = (keywordsList, univers, personnages, randomSeed) => {
+    // Implementation here...
+};
+
+const genererChapitresDetailles = (structureNarrative, univers, personnages, randomSeed) => {
+    // Implementation here...
+};
