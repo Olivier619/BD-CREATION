@@ -4,7 +4,11 @@
  */
 
 // Classe principale pour gérer les sessions
-class SessionManager {
+class SessionManager {updateCurrentSession(data) {
+    if (data.scenario) {
+        localStorage.setItem('bdScenario', JSON.stringify(data.scenario));
+    }
+    if (data.storyboard)
     constructor() {
         console.log("Initialisation du gestionnaire de sessions");
         this.currentSessionId = localStorage.getItem('currentSessionId') || null;
